@@ -1,9 +1,9 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { Suspense } from 'react'
-import Table from '@/components/table'
-import TablePlaceholder from '@/components/table-placeholder'
-import ExpandingArrow from '@/components/expanding-arrow'
+import Table from '@/src/components/table'
+import TablePlaceholder from '@/src/components/table-placeholder'
+import ExpandingArrow from '@/src/components/expanding-arrow'
 
 // Prisma does not support Edge without the Data Proxy currently
 // export const runtime = 'edge'
