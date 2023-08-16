@@ -4,7 +4,6 @@ import { Suspense } from 'react';
 import Table from '@/src/components/table';
 import TablePlaceholder from '@/src/components/table-placeholder';
 import ExpandingArrow from '@/src/components/expanding-arrow';
-import LoginButton from '@/src/components/login-button';
 
 // Prisma does not support Edge without the Data Proxy currently
 // export const runtime = 'edge'
