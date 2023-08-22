@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic';
 
 export default function Home() {
   return (
-    <main className='relative flex min-h-screen flex-col items-center justify-center'>
+    <>
       <Link
         href='https://vercel.com/templates/next.js/postgres-prisma'
         className='group mt-20 flex space-x-1 rounded-full bg-white/30 px-10 py-2 text-sm font-medium text-gray-600 shadow-sm ring-1 ring-gray-900/5 transition-all hover:shadow-lg active:shadow-sm sm:mt-0'
@@ -96,6 +96,6 @@ export default function Home() {
           <p className='font-light'>Source</p>
         </Link>
       </div>
-    </main>
+    </>
   );
 }
