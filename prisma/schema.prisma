@@ -38,6 +38,24 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
+model League {
+  id              String @id
+  leagueName      String
+  divisionLevel   Int
+
+  season          Season @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+  seasonId        String
+}
+
+model Season {
+  id                      String   @id @default(cuid())
+  startYear               Int
+  isActive                Boolean
+  isOpenForRegistration   Boolean
+
+  Leagues League[]
+}
+
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
