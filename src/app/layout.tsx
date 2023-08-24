@@ -25,7 +25,7 @@ export default function RootLayout({
       <body className={inter.variable}>
         <NextAuthProvider>
           <NavBar />
-          <main className='relative flex min-h-screen flex-col items-center justify-center'>
+          <main className='relative mt-8 flex min-h-screen flex-col items-center'>
             {children}
           </main>
         </NextAuthProvider>
