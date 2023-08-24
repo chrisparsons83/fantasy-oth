@@ -1,14 +1,22 @@
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
-import type { NextAuthOptions } from 'next-auth';
+import type { NextAuthOptions, Session } from 'next-auth';
 import DiscordProvider from 'next-auth/providers/discord';
 import prisma from '@/src/lib/prisma';
-import { Truculenta } from 'next/font/google';
+import { NextResponse } from 'next/server';
+import { redirect } from 'next/navigation';
 
 const OTH_SERVER_ID = `207634081700249601`;
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   callbacks: {
+    async session({ session, user }) {
+      if (session.user) {
+        session.user.id = user.id;
+      }
+
+      return session;
+    },
     async signIn({ user, account }) {
       if (account) {
         const resGuildMember = await fetch(
@@ -60,4 +68,14 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
+};
+
+export const requireAdmin = (session: Session | null) => {
+  if (!session) {
+    redirect('/');
+  }
+  if (session.user?.id !== 'cll90b6sj0002uf2g442bbb9z') {
+    redirect('/');
+  }
+  return true;
 };
