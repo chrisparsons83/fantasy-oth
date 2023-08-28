@@ -61,7 +61,12 @@ const Navbar = () => {
           )}
           id='navbar-default'
         >
-          <ul className='mt-4 flex flex-col rounded-lg border border-gray-100 bg-gray-50 p-4 font-medium dark:border-gray-700 dark:bg-gray-800 md:mt-0 md:flex-row md:space-x-8 md:border-0 md:bg-transparent md:p-0'>
+          <ul
+            className={clsx(
+              showDropdown && 'dark:bg-gray-800',
+              'mt-4 flex flex-col rounded-lg border border-gray-100 bg-gray-50 p-4 font-medium dark:border-gray-700  md:mt-0 md:flex-row md:space-x-8 md:border-0 md:bg-transparent md:p-0'
+            )}
+          >
             <li>
               <a
                 href='#'
