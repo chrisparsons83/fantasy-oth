@@ -5,9 +5,9 @@ import NavBar from '@/src/components/navbar';
 import clsx from 'clsx';
 
 export const metadata = {
-  title: 'Vercel Postgres Demo with Prisma',
+  title: 'Fantasy OTH',
   description:
-    'A simple Next.js app with Vercel Postgres as the database and Prisma as the ORM',
+    'A fantasy manager pool for the mega fantasy hockey league OldTimeHockey.',
 };
 
 const inter = Inter({
