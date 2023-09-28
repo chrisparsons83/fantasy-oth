@@ -1,4 +1,4 @@
-import SeasonsTable from './SeasonsTable';
+import LeaguesTable from './LeaguesTable';
 import { authOptions, requireAdmin } from '@/src/lib/auth';
 import { getServerSession } from 'next-auth';
 import Link from 'next/link';
@@ -10,13 +10,13 @@ const SeasonsPage = async () => {
 
   return (
     <div>
-      <h1>Seasons</h1>
+      <h1>Leagues</h1>
       <p>
-        <Link href='/admin/seasons/new'>Create Season</Link>
+        <Link href='/admin/leagues/new'>Create League</Link>
       </p>
       <Suspense fallback={<div>Loading...</div>}>
         {/* @ts-expect-error Async Server Component */}
-        <SeasonsTable />
+        <LeaguesTable />
       </Suspense>
     </div>
   );

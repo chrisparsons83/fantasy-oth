@@ -38,13 +38,27 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
+model FSquaredEntry {
+  id String @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  season          Season @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+  seasonId        String
+}
+
 model League {
   id              String @id
   leagueName      String
   divisionLevel   Int
 
+  name            String
+  division        Int
+
   season          Season @relation(fields: [seasonId], references: [id], onDelete: Cascade)
   seasonId        String
+
+  teams           Team[]
 }
 
 model Season {
@@ -54,6 +68,23 @@ model Season {
   isOpenForRegistration   Boolean
 
   Leagues League[]
+  fSquaredEntries FSquaredEntry[]
+}
+
+model Team {
+  id                      String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  league          League @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  leagueId        String
+
+  ownerName       String
+  teamName        String
+  pointsFor       Float
+  wins            Int
+  ties            Int
+  losses          Int
 }
 
 model Session {

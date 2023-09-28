@@ -9,7 +9,9 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
           <li className='w-full rounded-t-lg border-b border-gray-200 px-4 py-2 dark:border-gray-600'>
             <Link href='/admin/seasons'>Seasons</Link>
           </li>
-          <li className='w-full rounded-b-lg px-4 py-2'>Leagues</li>
+          <li className='w-full rounded-b-lg px-4 py-2'>
+            <Link href='/admin/leagues'>Leagues</Link>
+          </li>
         </ul>
       </div>
       <div className='md:col-span-9'>{children}</div>
