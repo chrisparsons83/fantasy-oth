@@ -17,10 +17,10 @@ const LeaguesTable = async () => {
               Year
             </th>
             <th scope='col' className='px-6 py-3'>
-              Active?
+              Division
             </th>
             <th scope='col' className='px-6 py-3'>
-              Reg Open?
+              Year
             </th>
           </tr>
         </thead>

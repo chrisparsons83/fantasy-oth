@@ -48,17 +48,16 @@ model FSquaredEntry {
 }
 
 model League {
-  id              String @id
-  leagueName      String
-  divisionLevel   Int
+  id                  String @id @default(cuid())
 
-  name            String
-  division        Int
+  name                String
+  division            Int
+  fleaflickerLeagueId Int @unique
 
-  season          Season @relation(fields: [seasonId], references: [id], onDelete: Cascade)
-  seasonId        String
+  season              Season @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+  seasonId            String
 
-  teams           Team[]
+  teams               Team[]
 }
 
 model Season {
@@ -79,12 +78,12 @@ model Team {
   league          League @relation(fields: [leagueId], references: [id], onDelete: Cascade)
   leagueId        String
 
+  fleaflickerTeamId Int @unique
+
   ownerName       String
   teamName        String
   pointsFor       Float
-  wins            Int
-  ties            Int
-  losses          Int
+  draftPosition   Int
 }
 
 model Session {
