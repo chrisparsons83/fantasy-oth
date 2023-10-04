@@ -79,3 +79,11 @@ export const requireAdmin = (session: Session | null) => {
   }
   return true;
 };
+
+export const requireUser = (session: Session | null) => {
+  if (!session) {
+    redirect('/');
+  }
+
+  return true;
+};

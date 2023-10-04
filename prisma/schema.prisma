@@ -45,6 +45,13 @@ model FSquaredEntry {
 
   season          Season @relation(fields: [seasonId], references: [id], onDelete: Cascade)
   seasonId        String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId String
+
+  teams Team[]
+
+  @@unique([seasonId, userId], name: "entryByUserAndSeason")
 }
 
 model League {
@@ -84,6 +91,8 @@ model Team {
   teamName        String
   pointsFor       Float
   draftPosition   Int
+
+  FSquaredSelections FSquaredEntry[]
 }
 
 model Session {
@@ -102,6 +111,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  fSquaredEntries FSquaredEntry[]
 }
 
 model VerificationToken {
