@@ -33,21 +33,28 @@ export const authOptions: NextAuthOptions = {
         );
         const jsonGuild = await resGuildMember.json();
 
-        console.log({ jsonGuild });
-
         // This blocks people not on the server from signing in, I think? Probably is a better way
         // to limit this than checking if they have any roles.
         if (jsonGuild.roles.length === 0) return false;
 
-        await prisma.user.update({
+        const name =
+          jsonGuild.nick ??
+          jsonGuild.user.global_name ??
+          jsonGuild.user.username;
+
+        await prisma.user.updateMany({
           where: {
-            id: user.id,
+            OR: [
+              {
+                id: user.id,
+              },
+              {
+                discordUserId: user.id,
+              },
+            ],
           },
           data: {
-            name:
-              jsonGuild.nick ??
-              jsonGuild.user.global_name ??
-              jsonGuild.user.username,
+            name,
           },
         });
       }
@@ -71,6 +78,7 @@ export const authOptions: NextAuthOptions = {
         }
         return {
           id: profile.id,
+          discordUserId: profile.id,
           name: profile.username,
           image: profile.image_url,
         };

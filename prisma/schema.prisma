@@ -11,14 +11,6 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
-model users {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  image     String
-  createdAt DateTime @default(now())
-}
-
 model Account {
   id                 String  @id @default(cuid())
   userId             String
@@ -105,6 +97,7 @@ model Session {
 
 model User {
   id            String    @id @default(cuid())
+  discordUserId String
   name          String?
   email         String?   @unique
   emailVerified DateTime?
