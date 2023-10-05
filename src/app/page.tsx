@@ -1,11 +1,6 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
-import { Suspense } from 'react';
-import Table from '@/src/components/table';
-import TablePlaceholder from '@/src/components/table-placeholder';
-import ExpandingArrow from '@/src/components/expanding-arrow';
 import { signIn } from 'next-auth/react';
 
 // Prisma does not support Edge without the Data Proxy currently
