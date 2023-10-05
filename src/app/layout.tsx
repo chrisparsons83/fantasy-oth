@@ -7,7 +7,7 @@ import clsx from 'clsx';
 export const metadata = {
   title: 'Fantasy OTH',
   description:
-    'A fantasy manager pool for the mega fantasy hockey league OldTimeHockey.',
+    'A fantasy manager pool for the fantasy hockey superleague OldTimeHockey.',
 };
 
 const inter = Inter({
@@ -29,7 +29,7 @@ export default function RootLayout({
         <NextAuthProvider>
           <NavBar />
           <main className='container relative mx-auto mt-8 min-h-screen items-center'>
-            <div className='prose dark:prose-invert lg:prose-xl max-w-none'>
+            <div className='prose max-w-none dark:prose-invert lg:prose-xl'>
               {children}
             </div>
           </main>
