@@ -10,6 +10,9 @@ const OTH_SERVER_ID = `207634081700249601`;
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   callbacks: {
+    async redirect({ url, baseUrl }) {
+      return baseUrl;
+    },
     async session({ session, user }) {
       if (session.user) {
         session.user.id = user.id;
