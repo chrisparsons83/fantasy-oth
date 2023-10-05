@@ -4,6 +4,7 @@ import DiscordProvider from 'next-auth/providers/discord';
 import prisma from '@/src/lib/prisma';
 import { NextResponse } from 'next/server';
 import { redirect } from 'next/navigation';
+import { json } from 'stream/consumers';
 
 const OTH_SERVER_ID = `207634081700249601`;
 
@@ -32,6 +33,8 @@ export const authOptions: NextAuthOptions = {
         );
         const jsonGuild = await resGuildMember.json();
 
+        console.log({ jsonGuild });
+
         // This blocks people not on the server from signing in, I think? Probably is a better way
         // to limit this than checking if they have any roles.
         if (jsonGuild.roles.length === 0) return false;
@@ -41,7 +44,10 @@ export const authOptions: NextAuthOptions = {
             id: user.id,
           },
           data: {
-            name: jsonGuild.nick,
+            name:
+              jsonGuild.nick ??
+              jsonGuild.user.global_name ??
+              jsonGuild.user.username,
           },
         });
       }
