@@ -29,7 +29,9 @@ export default function RootLayout({
         <NextAuthProvider>
           <NavBar />
           <main className='container relative mx-auto mt-8 min-h-screen items-center'>
-            {children}
+            <div className='prose dark:prose-invert lg:prose-xl max-w-none'>
+              {children}
+            </div>
           </main>
         </NextAuthProvider>
       </body>

@@ -15,7 +15,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className='border-gray-200 bg-white dark:bg-black-pearl-950'>
+    <nav className='border-b border-zinc-700 bg-white dark:bg-zinc-950'>
       <div className='mx-auto flex max-w-screen-xl flex-wrap items-center justify-between p-4'>
         <a href='/' className='flex items-center'>
           <Image
@@ -68,12 +68,12 @@ const Navbar = () => {
             )}
           >
             <li>
-              <a
-                href='#'
+              <Link
+                href='/leaderboard'
                 className='block rounded py-2 pl-3 pr-4 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-blue-700 md:dark:hover:bg-transparent md:dark:hover:text-blue-500'
               >
                 Leaderboard
-              </a>
+              </Link>
             </li>
             <li>
               <Link

@@ -1,5 +1,6 @@
 'use client';
 
+import { Button } from '@/src/components/ui/button';
 import { League, Prisma, Team } from '@prisma/client';
 import { Session } from 'next-auth';
 import React, { FormEvent, useState } from 'react';
@@ -88,52 +89,67 @@ const MyEntryForm = ({ leagues, session, existingEntry }: MyEntryFormProps) => {
   };
 
   const isValidLineup = Object.values(formValues).every((x) => x.length === 2);
+  const managersSelected = Object.values(formValues).flatMap((x) => x).length;
+
+  const buttonText = isLoading
+    ? 'Saving...'
+    : isValidLineup
+    ? 'Save Entry'
+    : `${managersSelected} of 16 managers selected`;
 
   return (
     <>
       {isSuccess && (
-        <p className='text-bold my-4 bg-green-800 p-4'>
+        <p className='text-bold bg-green-800 p-4'>
           Your entry has been updated.
         </p>
       )}
       {isFailure && (
-        <p className='text-bold my-4 bg-red-800 p-4'>
+        <p className='text-bold bg-red-800 p-4'>
           Something went wrong when submitting your entry. Go bug Chris.
         </p>
       )}
-      <form
-        className='mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3'
-        onSubmit={handleSubmit}
-      >
-        {leagues.map((league) => (
-          <div key={league.id} className='bg-gray-900 p-2'>
-            <h2>
-              {league.name} - D{league.division}
-            </h2>
-            {league.teams.map((team) => (
-              <label key={team.id} className='block'>
-                <input
-                  type='checkbox'
-                  name={league.id}
-                  value={team.id}
-                  className='disabled:opacity-25'
-                  onChange={handleChange}
-                  disabled={
-                    formValues[league.id].length === 2 &&
-                    !formValues[league.id].includes(team.id)
-                  }
-                  checked={formValues[league.id].includes(team.id)}
-                />{' '}
-                <span>
-                  {team.teamName} - {team.ownerName}
-                </span>
-              </label>
-            ))}
-          </div>
-        ))}
-        <button type='submit' disabled={!isValidLineup}>
-          {isLoading ? <>Saving...</> : <>Save Entry</>}
-        </button>
+      <form className='mb-8 mt-4' onSubmit={handleSubmit}>
+        <div className='grid gap-4 md:grid-cols-2 xl:grid-cols-3'>
+          {leagues.map((league) => (
+            <div
+              key={league.id}
+              className='rounded-md bg-zinc-700 p-4 drop-shadow-md'
+            >
+              <div className='mb-4 text-2xl font-bold'>
+                {league.name} - D{league.division}
+              </div>
+              {league.teams.map((team) => (
+                <label key={team.id} className='my-2 flex gap-4'>
+                  <input
+                    type='checkbox'
+                    name={league.id}
+                    value={team.id}
+                    className='disabled:opacity-25'
+                    onChange={handleChange}
+                    disabled={
+                      formValues[league.id].length === 2 &&
+                      !formValues[league.id].includes(team.id)
+                    }
+                    checked={formValues[league.id].includes(team.id)}
+                  />{' '}
+                  <div>
+                    <div className='text-sm font-bold'>{team.teamName}</div>
+                    <div className='text-sm italic'>{team.ownerName}</div>
+                  </div>
+                </label>
+              ))}
+            </div>
+          ))}
+        </div>
+
+        <Button
+          type='submit'
+          disabled={!isValidLineup}
+          className='mb-8 mt-4 w-full bg-blue-800 text-white hover:bg-blue-500'
+        >
+          {buttonText}
+        </Button>
       </form>
     </>
   );
