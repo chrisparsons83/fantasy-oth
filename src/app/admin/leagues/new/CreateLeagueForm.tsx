@@ -9,7 +9,6 @@ interface Props {
 }
 
 const CreateLeagueForm = ({ seasons }: Props) => {
-  console.log({ seasons });
   const router = useRouter();
 
   const [season, setSeason] = useState('');
@@ -32,8 +31,6 @@ const CreateLeagueForm = ({ seasons }: Props) => {
     });
     const data = await response.json();
 
-    console.log({ data });
-
     if (response.status === 200) {
       router.refresh();
       router.push('/admin/leagues');
@@ -41,8 +38,6 @@ const CreateLeagueForm = ({ seasons }: Props) => {
       setIsLoading(false);
     }
   };
-
-  console.log({ season, url });
 
   return (
     <form onSubmit={handleSubmit}>

@@ -29,8 +29,6 @@ interface PickDistributionProps {
 }
 
 const PickDistribution = ({ leagues }: PickDistributionProps) => {
-  console.log({ leagues });
-
   return (
     <div className='grid gap-4 md:grid-cols-2 xl:grid-cols-3'>
       {leagues.map((league) => (
