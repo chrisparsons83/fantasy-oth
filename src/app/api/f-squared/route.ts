@@ -11,6 +11,25 @@ const requestSchema = z.object({
 const handler = async (req: NextRequest) => {
   const { userId, seasonId, teams } = requestSchema.parse(await req.json());
 
+  // Get the list of teams that have had their draft start.
+  const teamsDrafted = (
+    await prisma.team.findMany({
+      where: {
+        league: {
+          season: {
+            isActive: true,
+          },
+          draftDateTime: {
+            lte: new Date(),
+          },
+        },
+      },
+      select: {
+        id: true,
+      },
+    })
+  ).map((x) => x.id);
+
   // Find if we have an existing entry already.
   const existingEntry = await prisma.fSquaredEntry.findFirst({
     where: {
@@ -22,6 +41,17 @@ const handler = async (req: NextRequest) => {
     },
   });
   if (!existingEntry) {
+    // If there's no existing entry and drafts have started, no dice for you.
+    if (teamsDrafted.length > 0) {
+      return NextResponse.json(
+        {
+          message: 'Drafts have already started.',
+        },
+        {
+          status: 400,
+        }
+      );
+    }
     await prisma.fSquaredEntry.create({
       data: {
         seasonId,
@@ -32,6 +62,32 @@ const handler = async (req: NextRequest) => {
       },
     });
   } else {
+    const teamsEntryArray = existingEntry.teams.map((team) => team.id);
+    const teamsDraftedInEntry = teamsDrafted
+      .filter((x) => teamsEntryArray.includes(x))
+      .sort((a, b) => a.localeCompare(b));
+    const teamsDraftedInFormSubmit = teamsDrafted
+      .filter((x) => teams.includes(x))
+      .sort((a, b) => a.localeCompare(b));
+
+    const entriesMatch =
+      teamsDraftedInEntry.length === teamsDraftedInFormSubmit.length &&
+      teamsDraftedInEntry
+        .slice()
+        .sort()
+        .every((value, index) => value === teamsDraftedInFormSubmit[index]);
+
+    if (!entriesMatch) {
+      return NextResponse.json(
+        {
+          message: 'Drafts have already started.',
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
     await prisma.fSquaredEntry.update({
       where: {
         id: existingEntry.id,
