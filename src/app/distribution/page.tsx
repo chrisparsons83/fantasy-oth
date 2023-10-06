@@ -2,6 +2,7 @@ import React from 'react';
 import prisma from '@/src/lib/prisma';
 import PickDistribution from './PickDistribution';
 
+export const dynamic = 'force-dynamic';
 const distribution = async () => {
   const leagues = await prisma.league.findMany({
     where: {
