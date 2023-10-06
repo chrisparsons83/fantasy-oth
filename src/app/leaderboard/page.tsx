@@ -8,6 +8,7 @@ import {
 import prisma from '@/src/lib/prisma';
 import LeaderboardTable from './LeaderboardTable';
 
+export const dynamic = 'force-dynamic';
 const leaderboard = async () => {
   const entries = await prisma.fSquaredEntry.findMany({
     where: {
