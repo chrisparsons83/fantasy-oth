@@ -41,7 +41,6 @@ const LeaderboardTable = ({ type, entries }: LeaderboardTableProps) => {
 
   const results: TableRow[] = entries
     .map((entry) => {
-      console.log({ teams: entry.teams.map((team) => team.ownerName) });
       return {
         id: entry.id,
         rank: 1,
