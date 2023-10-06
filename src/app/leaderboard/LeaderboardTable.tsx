@@ -33,6 +33,7 @@ interface TableRow {
   name: string;
   score: number;
   entries: string[];
+  rank: number;
 }
 
 const LeaderboardTable = ({ type, entries }: LeaderboardTableProps) => {
@@ -43,6 +44,7 @@ const LeaderboardTable = ({ type, entries }: LeaderboardTableProps) => {
       console.log({ teams: entry.teams.map((team) => team.ownerName) });
       return {
         id: entry.id,
+        rank: 1,
         name: entry.user.name ?? '',
         entries: entry.teams
           .filter((team) => team.league.draftDateTime < now)
@@ -62,6 +64,7 @@ const LeaderboardTable = ({ type, entries }: LeaderboardTableProps) => {
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead className='w-8'>Rank</TableHead>
             <TableHead>User</TableHead>
             <TableHead className='text-right'>
               <span className='pr-2'>Score</span>
@@ -71,6 +74,7 @@ const LeaderboardTable = ({ type, entries }: LeaderboardTableProps) => {
         <TableBody>
           {results.map((row) => (
             <TableRow key={row.id}>
+              <TableCell className='text-center'>{row.rank}</TableCell>
               <TableCell className='font-medium'>
                 <Dialog>
                   <DialogTrigger>{row.name}</DialogTrigger>
