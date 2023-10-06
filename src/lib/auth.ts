@@ -91,7 +91,11 @@ export const requireAdmin = (session: Session | null) => {
   if (!session) {
     redirect('/');
   }
-  if (session.user?.id !== 'cll90b6sj0002uf2g442bbb9z') {
+  if (
+    !['clncvwge50019uftvvwsjlwgy', 'cll90b6sj0002uf2g442bbb9z'].includes(
+      session.user?.id
+    )
+  ) {
     redirect('/');
   }
   return true;
