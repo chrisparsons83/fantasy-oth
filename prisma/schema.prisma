@@ -52,6 +52,7 @@ model League {
   name                String
   division            Int
   fleaflickerLeagueId Int @unique
+  draftDateTime       DateTime
 
   season              Season @relation(fields: [seasonId], references: [id], onDelete: Cascade)
   seasonId            String

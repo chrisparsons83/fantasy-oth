@@ -9,26 +9,33 @@ const requestSchema = z.object({
 });
 
 const fetchLeagueStandingsSchema = z.object({
-  divisions: z.object({
-    id: z.number(),
-    teams: z.object({
+  divisions: z
+    .object({
       id: z.number(),
-      name: z.string(),
-      pointsFor: z.object({
-        formatted: z.string()
-      }),
-      draftPosition: z.number(),
-      owners: z.object({
-        id: z.number(),
-        displayName: z.string(),
-      }).array()
-    }).array()
-  }).array(),
+      teams: z
+        .object({
+          id: z.number(),
+          name: z.string(),
+          pointsFor: z.object({
+            formatted: z.string(),
+          }),
+          draftPosition: z.number(),
+          owners: z
+            .object({
+              id: z.number(),
+              displayName: z.string(),
+            })
+            .array(),
+        })
+        .array(),
+    })
+    .array(),
   league: z.object({
     id: z.number(),
     name: z.string(),
-  })
-})
+    draftLiveTimeEpochMilli: z.string(),
+  }),
+});
 
 const handler = async (req: NextRequest) => {
   const { seasonId, url } = requestSchema.parse(await req.json());
@@ -47,50 +54,62 @@ const handler = async (req: NextRequest) => {
         fetchLeagueStandingsQueryVariables
     )
   ).json();
-  const fleaResponseParsed = fetchLeagueStandingsSchema.parse(fleaResponse)
+  const fleaResponseParsed = fetchLeagueStandingsSchema.parse(fleaResponse);
 
   // Upsert league
-  const [leagueName, leagueDivision] = fleaResponseParsed.league.name.split(' - ');
+  const [leagueName, leagueDivision] =
+    fleaResponseParsed.league.name.split(' - ');
   const league = await prisma.league.upsert({
     create: {
       name: leagueName,
       division: Number.parseInt(leagueDivision.slice(-1)),
       fleaflickerLeagueId: fleaResponseParsed.league.id,
+      draftDateTime: new Date(
+        Number.parseInt(fleaResponseParsed.league.draftLiveTimeEpochMilli) *
+          1000
+      ),
       season: {
         connect: {
-          id: seasonId
-        }
+          id: seasonId,
+        },
       },
     },
-    update: {},
+    update: {
+      draftDateTime: new Date(
+        Number.parseInt(fleaResponseParsed.league.draftLiveTimeEpochMilli) *
+          1000
+      ),
+    },
     where: {
-      fleaflickerLeagueId: fleaResponseParsed.league.id
-    }
-  })
+      fleaflickerLeagueId: fleaResponseParsed.league.id,
+    },
+  });
 
   // Upsert Teams
   const promises: Promise<Team>[] = [];
   for (const team of fleaResponseParsed.divisions[0].teams) {
-    promises.push(prisma.team.upsert({
-      create: {
-        teamName: team.name,
-        ownerName: team.owners[0].displayName,
-        pointsFor: Number.parseFloat(team.pointsFor.formatted),
-        fleaflickerTeamId: team.id,
-        draftPosition: team.draftPosition,
-        league: {
-          connect: {
-            id: league.id
-          }
-        }
-      },
-      update: {
-        pointsFor: Number.parseFloat(team.pointsFor.formatted),
-      },
-      where: {
-        fleaflickerTeamId: team.id
-      }
-    }));
+    promises.push(
+      prisma.team.upsert({
+        create: {
+          teamName: team.name,
+          ownerName: team.owners[0].displayName,
+          pointsFor: Number.parseFloat(team.pointsFor.formatted),
+          fleaflickerTeamId: team.id,
+          draftPosition: team.draftPosition,
+          league: {
+            connect: {
+              id: league.id,
+            },
+          },
+        },
+        update: {
+          pointsFor: Number.parseFloat(team.pointsFor.formatted),
+        },
+        where: {
+          fleaflickerTeamId: team.id,
+        },
+      })
+    );
   }
   await Promise.all(promises);
 

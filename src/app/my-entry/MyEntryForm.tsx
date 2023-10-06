@@ -2,6 +2,7 @@
 
 import { Button } from '@/src/components/ui/button';
 import { League, Prisma, Team } from '@prisma/client';
+import clsx from 'clsx';
 import { Session } from 'next-auth';
 import React, { FormEvent, useState } from 'react';
 
@@ -88,6 +89,8 @@ const MyEntryForm = ({ leagues, session, existingEntry }: MyEntryFormProps) => {
     }
   };
 
+  const now = new Date();
+
   const isValidLineup = Object.values(formValues).every((x) => x.length === 2);
   const managersSelected = Object.values(formValues).flatMap((x) => x).length;
 
@@ -128,12 +131,17 @@ const MyEntryForm = ({ leagues, session, existingEntry }: MyEntryFormProps) => {
                     className='disabled:opacity-25'
                     onChange={handleChange}
                     disabled={
-                      formValues[league.id].length === 2 &&
-                      !formValues[league.id].includes(team.id)
+                      (formValues[league.id].length === 2 &&
+                        !formValues[league.id].includes(team.id)) ||
+                      now > league.draftDateTime
                     }
                     checked={formValues[league.id].includes(team.id)}
                   />{' '}
-                  <div>
+                  <div
+                    className={clsx(
+                      formValues[league.id].includes(team.id) && 'text-sky-300'
+                    )}
+                  >
                     <div className='text-sm font-bold'>{team.teamName}</div>
                     <div className='text-sm italic'>{team.ownerName}</div>
                   </div>
