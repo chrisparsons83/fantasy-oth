@@ -84,6 +84,7 @@ model Team {
   teamName        String
   pointsFor       Float
   draftPosition   Int
+  wins            Int?
 
   FSquaredSelections FSquaredEntry[]
 }
