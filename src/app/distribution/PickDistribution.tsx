@@ -1,18 +1,23 @@
 import { Prisma } from '@prisma/client';
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/src/components/ui/table';
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/src/components/ui/dialog';
 import React from 'react';
 
 const leagueWithEntryCount = Prisma.validator<Prisma.LeagueArgs>()({
   include: {
     teams: {
       include: {
+        FSquaredSelections: {
+          include: {
+            user: true,
+          },
+        },
         _count: {
           select: { FSquaredSelections: true },
         },
@@ -45,10 +50,32 @@ const PickDistribution = ({ leagues }: PickDistributionProps) => {
                 key={team.id}
                 className='flex items-center justify-between py-2'
               >
-                <div>
-                  <div className='text-sm font-bold'>{team.teamName}</div>
-                  <div className='text-sm italic'>{team.ownerName}</div>
-                </div>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <div className='cursor-pointer'>
+                      <div className='text-sm font-bold'>{team.teamName}</div>
+                      <div className='text-sm italic'>{team.ownerName}</div>
+                    </div>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>
+                        Users that selected {team.ownerName}
+                      </DialogTitle>
+                    </DialogHeader>
+                    <div className='grid max-h-[80vh] grid-cols-1 divide-y divide-zinc-800 overflow-y-auto'>
+                      {team.FSquaredSelections.sort((a, b) =>
+                        a.user.name
+                          .toLocaleLowerCase()
+                          .localeCompare(b.user.name.toLocaleLowerCase())
+                      ).map((entry) => (
+                        <div key={entry.id} className='py-2'>
+                          {entry.user.name}
+                        </div>
+                      ))}
+                    </div>
+                  </DialogContent>
+                </Dialog>
                 <div>{team._count.FSquaredSelections}</div>
               </div>
             ))}
