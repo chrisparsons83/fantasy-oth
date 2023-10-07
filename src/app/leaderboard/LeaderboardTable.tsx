@@ -79,7 +79,7 @@ const LeaderboardTable = ({ type, entries }: LeaderboardTableProps) => {
                   <DialogTrigger>{row.name}</DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>List of managers selected</DialogTitle>
+                      <DialogTitle>Picks by {row.name}</DialogTitle>
                       <DialogDescription>
                         This list will populate as leagues draft.
                       </DialogDescription>
