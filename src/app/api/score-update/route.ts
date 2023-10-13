@@ -1,14 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { number, z } from 'zod';
+import z from 'zod';
 import prisma from '@/src/lib/prisma';
-import { url } from 'inspector';
 import { League, WeeklyScore } from '@prisma/client';
-
-const requestSchema = z.object({
-  userId: z.string(),
-  seasonId: z.string(),
-  teams: z.string().array(),
-});
 
 const fleaflickerScoreboardSchema = z.object({
   schedulePeriod: z.object({
