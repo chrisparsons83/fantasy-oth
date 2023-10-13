@@ -20,6 +20,7 @@ const leaderboard = async () => {
       user: true,
       teams: {
         include: {
+          WeeklyScores: true,
           league: true,
         },
         orderBy: [

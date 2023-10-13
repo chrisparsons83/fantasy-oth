@@ -87,6 +87,7 @@ model Team {
   wins            Int?
 
   FSquaredSelections FSquaredEntry[]
+  WeeklyScores WeeklyScore[]
 }
 
 model Session {
@@ -115,4 +116,15 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model WeeklyScore {
+  fleaflickerTeamId String
+  gamePeriod Int
+  pointsFor Float
+
+  team              Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  teamId            String
+
+  @@unique([gamePeriod, fleaflickerTeamId])
 }

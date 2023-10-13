@@ -17,7 +17,10 @@ import {
 import { Prisma } from '@prisma/client';
 
 const entriesWithTeamsAndUser = Prisma.validator<Prisma.FSquaredEntryArgs>()({
-  include: { user: true, teams: { include: { league: true } } },
+  include: {
+    user: true,
+    teams: { include: { league: true, WeeklyScores: true } },
+  },
 });
 export type EntriesWithTeamsAndUser = Prisma.FSquaredEntryGetPayload<
   typeof entriesWithTeamsAndUser
@@ -31,10 +34,24 @@ interface LeaderboardTableProps {
 interface TableRow {
   id: string;
   name: string;
-  score: number;
-  entries: string[];
+  pointsFor: number;
+  wins: number;
+  tiebreaker: number;
+  entries: EntriesWithTeamsAndUser['teams'];
   rank: number;
 }
+
+const scoreByPointsFor = (entry: EntriesWithTeamsAndUser) =>
+  Number.parseFloat(
+    entry.teams
+      .reduce(
+        (a, b) => a + b.WeeklyScores.reduce((a, b) => a + b.pointsFor, 0),
+        0
+      )
+      .toFixed(2)
+  );
+
+const scoreByWins = (entry: EntriesWithTeamsAndUser) => 0;
 
 const LeaderboardTable = ({ type, entries }: LeaderboardTableProps) => {
   const now = new Date();
@@ -45,18 +62,36 @@ const LeaderboardTable = ({ type, entries }: LeaderboardTableProps) => {
         id: entry.id,
         rank: 1,
         name: entry.user.name ?? '',
-        entries: entry.teams
-          .filter((team) => team.league.draftDateTime < now)
-          .map(
-            (team) =>
-              `D${team.league.division} ${team.league.name} - ${team.ownerName}`
-          ),
-        score: 0,
+        entries: entry.teams.filter((team) => team.league.draftDateTime < now),
+        pointsFor: scoreByPointsFor(entry),
+        wins: scoreByWins(entry),
+        tiebreaker: scoreByWins(entry) + scoreByPointsFor(entry) / 1000000000,
       };
     })
-    .sort((a, b) =>
-      a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase())
-    );
+    .sort((a, b) => {
+      if (type === 'pointsFor') {
+        if (b.pointsFor - a.pointsFor === 0) {
+          return b.tiebreaker - a.tiebreaker;
+        }
+        return b.pointsFor - a.pointsFor;
+      }
+      if (type === 'wins') {
+        if (b.wins - a.wins === 0) {
+          return b.tiebreaker - a.tiebreaker;
+        }
+        return b.wins - a.wins;
+      }
+
+      // Don't think we should ever get to this
+      return 0;
+    });
+
+  const rankedResults = results.map((entry, index) => {
+    return {
+      ...entry,
+      rank: index + 1,
+    };
+  });
 
   return (
     <div>
@@ -71,7 +106,7 @@ const LeaderboardTable = ({ type, entries }: LeaderboardTableProps) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {results.map((row) => (
+          {rankedResults.map((row) => (
             <TableRow key={row.id}>
               <TableCell className='text-center'>{row.rank}</TableCell>
               <TableCell className='font-medium'>
@@ -81,19 +116,45 @@ const LeaderboardTable = ({ type, entries }: LeaderboardTableProps) => {
                     <DialogHeader>
                       <DialogTitle>Picks by {row.name}</DialogTitle>
                       <DialogDescription>
-                        This list will populate as leagues draft.
+                        Breakdown of points scored
                       </DialogDescription>
                     </DialogHeader>
-                    {row.entries.map((entry) => (
-                      <div key={entry} className='leading-4'>
-                        {entry}
-                      </div>
-                    ))}
+                    <div className='max-h-[70vh] overflow-y-auto'>
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead className='p-2'>Team</TableHead>
+                            <TableHead className='p-2'>Points</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {row.entries.map((entry) => (
+                            <TableRow
+                              key={entry.WeeklyScores[0].fleaflickerTeamId}
+                            >
+                              <TableCell className='p-2'>
+                                {`D${entry.league.division} - ${entry.teamName}`}
+                              </TableCell>
+                              <TableCell className='p-2'>
+                                {entry.WeeklyScores.reduce(
+                                  (a, b) => a + b.pointsFor,
+                                  0
+                                )}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
                   </DialogContent>
                 </Dialog>
               </TableCell>
               <TableCell className='text-right'>
-                <span className='pr-2'>{row.score}</span>
+                <span className='pr-2'>
+                  {type === 'pointsFor'
+                    ? row.pointsFor.toFixed(2)
+                    : row.wins.toFixed(0)}
+                </span>
               </TableCell>
             </TableRow>
           ))}
