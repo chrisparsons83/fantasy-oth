@@ -3,6 +3,7 @@ import z from 'zod';
 import prisma from '@/src/lib/prisma';
 import { League, WeeklyScore } from '@prisma/client';
 
+export const dynamic = 'force-dynamic';
 const fleaflickerScoreboardSchema = z.object({
   schedulePeriod: z.object({
     ordinal: z.number(),
