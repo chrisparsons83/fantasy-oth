@@ -47,7 +47,10 @@ const leaderboard = async () => {
   return (
     <div>
       <h1>Leaderboard</h1>
-      <p>Clicking on a user's name will display their selections.</p>
+      <p>
+        Scores update at 11pm PT daily. Clicking on a user's name will display
+        their selections.
+      </p>
       <Tabs defaultValue='pointsFor'>
         <TabsList>
           <TabsTrigger value='pointsFor'>Points For</TabsTrigger>
