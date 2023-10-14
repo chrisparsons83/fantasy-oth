@@ -1,4 +1,10 @@
 {
   "buildCommand": "pnpm turbo build",
-  "installCommand": "pnpm install"
+  "installCommand": "pnpm install",
+  "crons": [
+    {
+      "path": "/api/score-update",
+      "schedule": "0 6 * * *"
+    }
+  ]
 }

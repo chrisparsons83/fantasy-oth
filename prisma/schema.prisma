@@ -128,3 +128,8 @@ model WeeklyScore {
 
   @@unique([gamePeriod, fleaflickerTeamId])
 }
+
+model ScoreUpdate {
+  id            String    @id @default(cuid())
+  createdAt DateTime @default(now())
+}

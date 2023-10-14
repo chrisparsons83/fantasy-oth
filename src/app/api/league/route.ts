@@ -1,7 +1,7 @@
 import prisma from '@/src/lib/prisma';
 import type { Team } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
-import { number, z } from 'zod';
+import z from 'zod';
 
 const requestSchema = z.object({
   seasonId: z.string(),
@@ -19,7 +19,7 @@ const fetchLeagueStandingsSchema = z.object({
           pointsFor: z.object({
             formatted: z.string(),
           }),
-          draftPosition: z.number(),
+          draftPosition: z.number().optional(),
           owners: z
             .object({
               id: z.number(),
@@ -75,10 +75,11 @@ const handler = async (req: NextRequest) => {
       },
     },
     update: {
-      draftDateTime: new Date(
-        Number.parseInt(fleaResponseParsed.league.draftLiveTimeEpochMilli) *
-          1000
-      ),
+      // TODO: Fix this
+      // draftDateTime: new Date(
+      //   Number.parseInt(fleaResponseParsed.league.draftLiveTimeEpochMilli) *
+      //     1000
+      // ),
     },
     where: {
       fleaflickerLeagueId: fleaResponseParsed.league.id,
@@ -95,7 +96,7 @@ const handler = async (req: NextRequest) => {
           ownerName: team.owners[0].displayName,
           pointsFor: Number.parseFloat(team.pointsFor.formatted),
           fleaflickerTeamId: team.id,
-          draftPosition: team.draftPosition,
+          draftPosition: team.draftPosition ?? 1,
           league: {
             connect: {
               id: league.id,
@@ -103,6 +104,7 @@ const handler = async (req: NextRequest) => {
           },
         },
         update: {
+          teamName: team.name,
           pointsFor: Number.parseFloat(team.pointsFor.formatted),
         },
         where: {

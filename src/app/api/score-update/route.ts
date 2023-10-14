@@ -137,6 +137,10 @@ const handler = async (req: NextRequest) => {
         })
       );
     }
+    if (scorePromises.length >= 10) {
+      await Promise.all(scorePromises);
+      scorePromises.length = 0;
+    }
   }
   await Promise.all(scorePromises);
 
@@ -156,6 +160,11 @@ const handler = async (req: NextRequest) => {
   //   );
   // }
   // const fleaflickerStandings = await Promise.all(standingsPromises);
+
+  // Save score update
+  await prisma.scoreUpdate.create({
+    data: {},
+  });
 
   return NextResponse.json({ message: 'added' });
 };
