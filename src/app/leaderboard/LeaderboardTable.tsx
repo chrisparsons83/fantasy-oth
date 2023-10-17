@@ -125,7 +125,8 @@ const LeaderboardTable = ({ type, entries }: LeaderboardTableProps) => {
                         <TableHeader>
                           <TableRow>
                             <TableHead className='p-2'>Team</TableHead>
-                            <TableHead className='p-2'>Points</TableHead>
+                            <TableHead className='p-2'>Win Pts</TableHead>
+                            <TableHead className='p-2'>PF Pts</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -137,10 +138,13 @@ const LeaderboardTable = ({ type, entries }: LeaderboardTableProps) => {
                                 {`D${entry.league.division} - ${entry.teamName}`}
                               </TableCell>
                               <TableCell className='p-2'>
+                                {entry.wins}
+                              </TableCell>
+                              <TableCell className='p-2'>
                                 {entry.WeeklyScores.reduce(
                                   (a, b) => a + b.pointsFor,
                                   0
-                                )}
+                                ).toFixed(2)}
                               </TableCell>
                             </TableRow>
                           ))}
