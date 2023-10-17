@@ -1,37 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import z from 'zod';
 import prisma from '@/src/lib/prisma';
-import { League, WeeklyScore } from '@prisma/client';
+import { League, Team, WeeklyScore } from '@prisma/client';
+import {
+  fetchLeagueStandingsSchema,
+  fleaflickerScoreboardSchema,
+} from '@/src/schemas/fleaflicker';
 
 export const dynamic = 'force-dynamic';
-const fleaflickerScoreboardSchema = z.object({
-  schedulePeriod: z.object({
-    ordinal: z.number(),
-  }),
-  games: z
-    .object({
-      id: z.string(),
-      home: z.object({
-        id: z.number(),
-      }),
-      away: z.object({
-        id: z.number(),
-      }),
-      homeScore: z.object({
-        score: z.object({
-          value: z.number(),
-          formatted: z.string(),
-        }),
-      }),
-      awayScore: z.object({
-        score: z.object({
-          value: z.number(),
-          formatted: z.string(),
-        }),
-      }),
-    })
-    .array(),
-});
 
 const pointsMultipler: Record<League['division'], number> = {
   '1': 3,
@@ -145,23 +120,57 @@ const handler = async (req: NextRequest) => {
   await Promise.all(scorePromises);
 
   // Update Wins
-  // const standingsPromises: Promise<Response>[] = []
-  // for (const league of leagues) {
-  //   const leagueQueryVariables = new URLSearchParams({
-  //     sport: 'NHL',
-  //     league_id: league.fleaflickerLeagueId.toString(),
-  //     season: league.season.startYear.toString(),
-  //   });
-  //   standingsPromises.push(
-  //     fetch(
-  //       'https://www.fleaflicker.com/api/FetchLeagueScoreboard?' +
-  //         leagueQueryVariables
-  //     )
-  //   );
-  // }
-  // const fleaflickerStandings = await Promise.all(standingsPromises);
+  const standingsPromises: Promise<Response>[] = [];
+  for (const league of leagues) {
+    const leagueQueryVariables = new URLSearchParams({
+      sport: 'NHL',
+      league_id: league.fleaflickerLeagueId.toString(),
+      season: league.season.startYear.toString(),
+    });
+    standingsPromises.push(
+      fetch(
+        'https://www.fleaflicker.com/api/FetchLeagueStandings?' +
+          leagueQueryVariables
+      )
+    );
+  }
+  const fleaflickerStandings = await Promise.all(standingsPromises);
+
+  const standingsUpdatePromises: Promise<Team>[] = [];
+  for (let i = 0; i < leagues.length; i++) {
+    const standings = fleaflickerStandings[i];
+    const league = leagues[i];
+
+    const parsedStandings = fetchLeagueStandingsSchema.parse(
+      await standings.json()
+    );
+    for (const team of parsedStandings.divisions[0].teams) {
+      standingsUpdatePromises.push(
+        prisma.team.update({
+          where: {
+            fleaflickerTeamId: team.id,
+          },
+          data: {
+            wins:
+              (team.recordOverall.wins ?? 0) *
+                pointsMultipler[league.division] +
+              (team.recordOverall.ties ?? 0) *
+                pointsMultipler[league.division] *
+                0.5,
+          },
+        })
+      );
+      if (standingsUpdatePromises.length >= 10) {
+        await Promise.all(standingsUpdatePromises);
+        standingsUpdatePromises.length = 0;
+      }
+    }
+  }
+  await Promise.all(standingsUpdatePromises);
 
   // Save score update
+  // This basically acts as a log that a score update happened. Everything is default so all you
+  // need to do is save it.
   await prisma.scoreUpdate.create({
     data: {},
   });

@@ -1,3 +1,4 @@
+import { fetchLeagueStandingsSchema } from '@/src/schemas/fleaflicker';
 import prisma from '@/src/lib/prisma';
 import type { Team } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
@@ -6,35 +7,6 @@ import z from 'zod';
 const requestSchema = z.object({
   seasonId: z.string(),
   url: z.string(),
-});
-
-const fetchLeagueStandingsSchema = z.object({
-  divisions: z
-    .object({
-      id: z.number(),
-      teams: z
-        .object({
-          id: z.number(),
-          name: z.string(),
-          pointsFor: z.object({
-            formatted: z.string(),
-          }),
-          draftPosition: z.number().optional(),
-          owners: z
-            .object({
-              id: z.number(),
-              displayName: z.string(),
-            })
-            .array(),
-        })
-        .array(),
-    })
-    .array(),
-  league: z.object({
-    id: z.number(),
-    name: z.string(),
-    draftLiveTimeEpochMilli: z.string(),
-  }),
 });
 
 const handler = async (req: NextRequest) => {

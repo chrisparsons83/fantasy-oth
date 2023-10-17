@@ -51,7 +51,8 @@ const scoreByPointsFor = (entry: EntriesWithTeamsAndUser) =>
       .toFixed(2)
   );
 
-const scoreByWins = (entry: EntriesWithTeamsAndUser) => 0;
+const scoreByWins = (entry: EntriesWithTeamsAndUser) =>
+  entry.teams.reduce((a, b) => a + (b.wins ?? 0), 0);
 
 const LeaderboardTable = ({ type, entries }: LeaderboardTableProps) => {
   const now = new Date();
