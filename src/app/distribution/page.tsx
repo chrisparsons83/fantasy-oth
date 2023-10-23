@@ -24,7 +24,7 @@ const distribution = async () => {
     include: {
       teams: {
         orderBy: {
-          draftPosition: 'asc',
+          pointsFor: 'desc',
         },
         include: {
           FSquaredSelections: {
@@ -35,6 +35,11 @@ const distribution = async () => {
               user: {
                 name: 'asc',
               },
+            },
+          },
+          WeeklyScores: {
+            select: {
+              pointsFor: true,
             },
           },
           _count: {
