@@ -48,7 +48,7 @@ const leaderboard = async () => {
     <div>
       <h1>Leaderboard</h1>
       <p>
-        Scores update at 11pm PT daily. Clicking on a user's name will display
+        Scores update at 1am PT daily. Clicking on a user's name will display
         their selections.
       </p>
       <Tabs defaultValue='pointsFor'>
