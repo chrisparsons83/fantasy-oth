@@ -16,6 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/src/components/ui/table';
+import { pointsMultipler } from '@/src/lib/utils';
 
 const leagueWithEntryCount = Prisma.validator<Prisma.LeagueArgs>()({
   include: {
@@ -70,10 +71,10 @@ const PickDistribution = ({ leagues }: PickDistributionProps) => {
             <Table className='my-0'>
               <TableHeader>
                 <TableRow>
-                  <TableHead className='p-2'>Team</TableHead>
+                  <TableHead className='w-1/2 p-2'>Team</TableHead>
                   <TableHead className='p-2'>Picks</TableHead>
-                  <TableHead className='min-w-[4em] p-2'>W Pts</TableHead>
-                  <TableHead className='p-2'>PF Pts</TableHead>
+                  <TableHead className='p-2'>Wins</TableHead>
+                  <TableHead className='px-4 py-2'>PF</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -81,21 +82,17 @@ const PickDistribution = ({ leagues }: PickDistributionProps) => {
                   <TableRow key={team.id} className='border-zinc-800'>
                     <TableCell className='py-0 pl-2'>
                       <Dialog>
-                        <DialogTrigger asChild>
-                          <div className='my-1 cursor-pointer'>
-                            <div className='text-sm font-bold'>
-                              {team.teamName}
-                            </div>
-                            <div className='text-sm italic'>
-                              {team.ownerName} ({team.draftPosition})
-                            </div>
-                          </div>
+                        <DialogTrigger className='text-left'>
+                          {team.ownerName}
                         </DialogTrigger>
                         <DialogContent>
                           <DialogHeader>
                             <DialogTitle>
                               Users that selected {team.ownerName}
                             </DialogTitle>
+                            <DialogDescription>
+                              Drafted from the {team.draftPosition} spot
+                            </DialogDescription>
                           </DialogHeader>
                           <div className='grid max-h-[80vh] grid-cols-1 divide-y divide-zinc-800 overflow-y-auto'>
                             {team.FSquaredSelections.sort((a, b) =>
@@ -112,11 +109,15 @@ const PickDistribution = ({ leagues }: PickDistributionProps) => {
                       </Dialog>
                     </TableCell>
                     <TableCell>{team._count.FSquaredSelections}</TableCell>
-                    <TableCell>{team.wins}</TableCell>
                     <TableCell>
-                      {team.WeeklyScores.reduce(
-                        (a, b) => a + b.pointsFor,
-                        0
+                      {(
+                        (team.wins ?? 0) / pointsMultipler[league.division]
+                      ).toFixed(0)}
+                    </TableCell>
+                    <TableCell>
+                      {(
+                        team.WeeklyScores.reduce((a, b) => a + b.pointsFor, 0) /
+                        pointsMultipler[league.division]
                       ).toFixed(2)}
                     </TableCell>
                   </TableRow>

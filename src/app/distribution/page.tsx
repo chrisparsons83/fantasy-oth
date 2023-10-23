@@ -54,8 +54,8 @@ const distribution = async () => {
     <div>
       <h1>Picks by League</h1>
       <p>
-        These will populate as drafts start. Clicking on a team name will show
-        you all users that selected that team in their entry.
+        These will populate as drafts start. Clicking on a name will show you
+        all users that selected that team in their entry.
       </p>
       <PickDistribution leagues={leagues} />
     </div>

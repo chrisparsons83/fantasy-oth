@@ -5,14 +5,9 @@ import {
   fetchLeagueStandingsSchema,
   fleaflickerScoreboardSchema,
 } from '@/src/schemas/fleaflicker';
+import { pointsMultipler } from '@/src/lib/utils';
 
 export const dynamic = 'force-dynamic';
-
-const pointsMultipler: Record<League['division'], number> = {
-  '1': 3,
-  '2': 2,
-  '3': 1,
-};
 
 const handler = async (req: NextRequest) => {
   const leagues = await prisma.league.findMany({

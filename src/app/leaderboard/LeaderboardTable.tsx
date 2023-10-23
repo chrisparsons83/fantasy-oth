@@ -124,7 +124,7 @@ const LeaderboardTable = ({ type, entries }: LeaderboardTableProps) => {
                       <Table>
                         <TableHeader>
                           <TableRow>
-                            <TableHead className='p-2'>Team</TableHead>
+                            <TableHead className='w-3/5 p-2'>Team</TableHead>
                             <TableHead className='p-2'>Win Pts</TableHead>
                             <TableHead className='p-2'>PF Pts</TableHead>
                           </TableRow>
@@ -135,7 +135,7 @@ const LeaderboardTable = ({ type, entries }: LeaderboardTableProps) => {
                               key={entry.WeeklyScores[0].fleaflickerTeamId}
                             >
                               <TableCell className='p-2'>
-                                {`D${entry.league.division} - ${entry.teamName}`}
+                                {`D${entry.league.division} - ${entry.ownerName}`}
                               </TableCell>
                               <TableCell className='p-2'>
                                 {entry.wins}
