@@ -49,14 +49,14 @@ export const fleaflickerScoreboardSchema = z.object({
       }),
       homeScore: z.object({
         score: z.object({
-          value: z.number(),
-          formatted: z.string(),
+          value: z.number().optional(),
+          formatted: z.string().optional(),
         }),
       }),
       awayScore: z.object({
         score: z.object({
-          value: z.number(),
-          formatted: z.string(),
+          value: z.number().optional(),
+          formatted: z.string().optional(),
         }),
       }),
     })

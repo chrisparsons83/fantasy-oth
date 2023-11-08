@@ -64,7 +64,7 @@ const handler = async (req: NextRequest) => {
             gamePeriod: parsedScoreboard.schedulePeriod.ordinal,
             fleaflickerTeamId: game.away.id.toString(),
             pointsFor:
-              Number.parseFloat(game.awayScore.score.formatted) *
+              Number.parseFloat(game.awayScore.score.formatted || '0') *
               pointsMultipler[league.division],
             team: {
               connect: {
@@ -74,7 +74,7 @@ const handler = async (req: NextRequest) => {
           },
           update: {
             pointsFor:
-              Number.parseFloat(game.awayScore.score.formatted) *
+              Number.parseFloat(game.awayScore.score.formatted || '0') *
               pointsMultipler[league.division],
           },
         })
@@ -91,7 +91,7 @@ const handler = async (req: NextRequest) => {
             gamePeriod: parsedScoreboard.schedulePeriod.ordinal,
             fleaflickerTeamId: game.home.id.toString(),
             pointsFor:
-              Number.parseFloat(game.homeScore.score.formatted) *
+              Number.parseFloat(game.homeScore.score.formatted || '0') *
               pointsMultipler[league.division],
             team: {
               connect: {
@@ -101,7 +101,7 @@ const handler = async (req: NextRequest) => {
           },
           update: {
             pointsFor:
-              Number.parseFloat(game.homeScore.score.formatted) *
+              Number.parseFloat(game.homeScore.score.formatted || '0') *
               pointsMultipler[league.division],
           },
         })
