@@ -37,7 +37,7 @@ const handler = async (req: NextRequest) => {
       division: Number.parseInt(leagueDivision.slice(-1)),
       fleaflickerLeagueId: fleaResponseParsed.league.id,
       draftDateTime: new Date(
-        Number.parseInt(fleaResponseParsed.league.draftLiveTimeEpochMilli ?? 0) *
+        Number.parseInt(fleaResponseParsed.league.draftLiveTimeEpochMilli ?? '0') *
           1000
       ),
       season: {
