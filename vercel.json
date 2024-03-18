@@ -1,12 +1,6 @@
 {
   "buildCommand": "pnpm turbo build",
   "installCommand": "pnpm install",
-  "crons": [
-    {
-      "path": "/api/score-update",
-      "schedule": "0 10 * * *"
-    }
-  ],
   "functions": {
     "src/app/api/score-update/route.ts": {
       "maxDuration": 60
