@@ -30,7 +30,7 @@ export const fetchLeagueStandingsSchema = z.object({
   league: z.object({
     id: z.number(),
     name: z.string(),
-    draftLiveTimeEpochMilli: z.string(),
+    draftLiveTimeEpochMilli: z.string().optional(),
   }),
 });
 
