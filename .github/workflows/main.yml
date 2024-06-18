@@ -112,6 +112,8 @@ jobs:
 
       - name: 🗄️ Save to Vultr Container Registry
         uses: docker/build-push-action@v5
+        env:
+          POSTGRES_URL_NON_POOLING: ${{ secrets.POSTGRES_URL_NON_POOLING }}
         with:
           push: true
           tags: sjc.vultrcr.com/chrisparsons/fantasyoth:latest
