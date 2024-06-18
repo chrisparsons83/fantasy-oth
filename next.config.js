@@ -6,6 +6,7 @@ const nextConfig = {
   images: {
     domains: ['pbs.twimg.com'],
   },
+  output: "standalone",
 }
 
 module.exports = nextConfig
