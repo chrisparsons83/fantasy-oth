@@ -70,8 +70,8 @@ jobs:
       - name: ⎔ Setup node
         uses: actions/setup-node@v4
         with:
-          cache: npm
-          node-version: 18
+          cache: pnpm
+          node-version: 20
 
       - name: Get pnpm store directory
         shell: bash
