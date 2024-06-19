@@ -27,6 +27,11 @@ COPY . .
 # Uncomment the following line in case you want to disable telemetry during the build.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
+ARG POSTGRES_URL_NON_POOLING
+ARG POSTGRES_PRISMA_URL
+ENV POSTGRES_URL_NON_POOLING ${POSTGRES_URL_NON_POOLING}
+ENV POSTGRES_PRISMA_URL ${POSTGRES_PRISMA_URL}
+
 RUN \
   if [ -f yarn.lock ]; then yarn run build; \
   elif [ -f package-lock.json ]; then npm run build; \
