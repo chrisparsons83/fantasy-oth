@@ -120,8 +120,8 @@ jobs:
           tags: sjc.vultrcr.com/chrisparsons/fantasyoth:latest
           cache-from: type=registry,ref=sjc.vultrcr.com/chrisparsons/fantasyoth:latest
           build-args: |
-            POSTGRES_URL_NON_POOLING: ${{ secrets.POSTGRES_URL_NON_POOLING }}
-            POSTGRES_PRISMA_URL: ${{ secrets.POSTGRES_PRISMA_URL }}
+            POSTGRES_URL_NON_POOLING=${{ secrets.POSTGRES_URL_NON_POOLING }}
+            POSTGRES_PRISMA_URL=${{ secrets.POSTGRES_PRISMA_URL }}
 
       - name: Deploy app to Vultr VPS
         uses: appleboy/ssh-action@master
